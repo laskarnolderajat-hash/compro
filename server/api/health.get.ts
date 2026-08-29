@@ -34,5 +34,29 @@ export default defineEventHandler(async () => {
     out.firestoreImport = `GAGAL: ${(e as Error).message}`
   }
 
+  // Dynamic import supaya kegagalan modul util tertangkap di sini, bukan
+  // membuat route ini ikut mati seperti route lain.
+  try {
+    const m = await import('../utils/firebaseAdmin')
+    out.utilImport = 'ok'
+    const db = m.useAdminDb()
+    const snap = await db.collection('trips').limit(1).get()
+    out.firestoreQuery = `ok (${snap.size} dok)`
+  } catch (e) {
+    out.utilImportOrQuery = `GAGAL: ${(e as Error).message}`
+  }
+
+  try {
+    const cfg = useRuntimeConfig()
+    out.runtimeConfig = {
+      serviceAccountType: typeof cfg.firebaseServiceAccount,
+      serviceAccountKosong: !cfg.firebaseServiceAccount,
+      projectId: cfg.public.firebase.projectId || '(kosong)',
+      useEmulator: cfg.public.useFirebaseEmulator,
+    }
+  } catch (e) {
+    out.runtimeConfig = `GAGAL: ${(e as Error).message}`
+  }
+
   return out
 })
