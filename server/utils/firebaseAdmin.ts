@@ -1,6 +1,7 @@
 import { cert, getApps, initializeApp, applicationDefault, type App, type ServiceAccount } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
+import { existsSync } from 'node:fs'
 
 let app: App | undefined
 
@@ -23,10 +24,31 @@ function ensureApp(): App {
   }
 
   const raw = config.firebaseServiceAccount
-  app = initializeApp({
-    projectId,
-    credential: raw ? cert(parseServiceAccount(raw)) : applicationDefault(),
-  })
+  if (raw) {
+    app = initializeApp({ projectId, credential: cert(parseServiceAccount(raw)) })
+    return app
+  }
+
+  // Tanpa NUXT_FIREBASE_SERVICE_ACCOUNT, Admin SDK jatuh ke Application Default
+  // Credentials. Itu tersedia di lokal (GOOGLE_APPLICATION_CREDENTIALS menunjuk
+  // serviceAccount.json) dan di Google Cloud, tapi TIDAK di Vercel. Gagal di
+  // sini lebih baik daripada meledak jauh kemudian dengan pesan yang tidak
+  // nyambung — mis. tampil sebagai "token tidak valid" saat admin menyimpan.
+  const adcPath = process.env.GOOGLE_APPLICATION_CREDENTIALS
+  if (!adcPath) {
+    throw createError({
+      statusCode: 503,
+      message: 'Kredensial server Firebase belum dipasang. Set NUXT_FIREBASE_SERVICE_ACCOUNT di environment hosting.',
+    })
+  }
+  if (!existsSync(adcPath)) {
+    throw createError({
+      statusCode: 503,
+      message: `GOOGLE_APPLICATION_CREDENTIALS menunjuk ke "${adcPath}" yang tidak ada di server. Di hosting, pakai NUXT_FIREBASE_SERVICE_ACCOUNT dan hapus variabel ini.`,
+    })
+  }
+
+  app = initializeApp({ projectId, credential: applicationDefault() })
   return app
 }
 

@@ -13,11 +13,17 @@ export async function requireAdmin(event: H3Event): Promise<DecodedIdToken> {
     throw createError({ statusCode: 401, message: 'Token tidak ada.' })
   }
 
+  // Sengaja di luar try di bawah: kegagalan inisialisasi Admin SDK (mis. service
+  // account tidak terpasang) adalah masalah server, bukan masalah token
+  // pengguna. Kalau ikut tertangkap, admin dapat pesan "token tidak valid" yang
+  // menyesatkan dan menyembunyikan sebab aslinya.
+  const auth = useAdminAuthSdk()
+
   let decoded: DecodedIdToken
   try {
-    decoded = await useAdminAuthSdk().verifyIdToken(token)
+    decoded = await auth.verifyIdToken(token)
   } catch {
-    throw createError({ statusCode: 401, message: 'Token tidak valid atau kedaluwarsa.' })
+    throw createError({ statusCode: 401, message: 'Sesi kedaluwarsa. Keluar lalu masuk lagi.' })
   }
 
   if (decoded.admin !== true) {
