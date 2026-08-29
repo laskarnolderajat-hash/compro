@@ -6,6 +6,7 @@ const mobileOpen = ref(false)
 const navItems = [
   { label: 'Beranda', to: '/' },
   { label: 'Open Trip', to: '/trip' },
+  { label: 'Galeri', to: '/galeri' },
   { label: 'Blog', to: '/blog' },
   { label: 'Cek Pendaftaran', to: '/riwayat' },
 ]
@@ -65,6 +66,7 @@ const navItems = [
         <div class="text-sm text-paper/80 space-y-1.5">
           <p class="text-frost-dim font-mono text-xs uppercase tracking-wider mb-2">Navigasi</p>
           <NuxtLink to="/trip" class="block hover:text-frost">Open Trip</NuxtLink>
+          <NuxtLink to="/galeri" class="block hover:text-frost">Galeri</NuxtLink>
           <NuxtLink to="/blog" class="block hover:text-frost">Blog</NuxtLink>
           <NuxtLink to="/riwayat" class="block hover:text-frost">Cek Pendaftaran</NuxtLink>
           <NuxtLink to="/admin" class="block hover:text-frost text-fog">Admin</NuxtLink>

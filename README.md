@@ -74,6 +74,37 @@ pengguna Indonesia dan dengan Firestore di `asia-southeast2`.
 > `apphosting.yaml` sengaja dibiarkan di repo kalau suatu saat pindah ke Firebase App
 > Hosting — file itu diabaikan oleh Vercel.
 
+## Postingan Instagram & TikTok
+
+Admin menempel link post di `/admin/social` — tidak ada penarikan otomatis, jadi tidak perlu
+app Meta/TikTok maupun token yang harus diperbarui berkala.
+
+- **TikTok** — thumbnail, nama akun, dan caption diambil otomatis dari oEmbed publik
+  (`tiktok.com/oembed`, tanpa API key).
+- **Instagram** — Meta tidak mengizinkan oEmbed tanpa token aplikasi, jadi caption dan URL
+  thumbnail diisi manual di form. Dikosongkan pun tidak apa-apa: kartunya tetap tampil polos
+  dan embed di `/galeri` tetap utuh.
+
+URL dinormalisasi saat disimpan (parameter share seperti `?igsh=` dibuang), link pendek
+TikTok (`vm.tiktok.com`) diikuti redirect-nya, dan post yang sama ditolak kalau sudah ada.
+
+Tampil di tiga tempat:
+- **Beranda** — yang ditandai *Tampilkan di beranda*, maksimal 6, memakai kartu ringan
+- **`/galeri`** — semuanya, dengan embed resmi platform yang baru dimuat saat masuk viewport
+- **Detail trip** — post yang dikaitkan ke trip itu, sebagai section "Dokumentasi"
+
+Koleksi Firestore `socialPosts`; hanya menyimpan URL dan metadata publik, bukan media.
+
+## Reset data
+
+`npm run reset` mengosongkan `trips`, `posts`, `bookings`, `members`, dan `socialPosts`.
+Dokumen `settings/companyProfile` dan seluruh akun Authentication **tidak** disentuh.
+Wajib memakai `CONFIRM=hapus-semua` supaya tidak terjalankan tak sengaja:
+
+```bash
+CONFIRM=hapus-semua SEED_TARGET=production npm run reset
+```
+
 ## QR code open trip
 
 Tiap trip punya QR berisi link ke halaman detailnya, dibuat di browser (`qrcode`) tanpa
@@ -98,18 +129,20 @@ request — jadi otomatis memakai domain produksi setelah deploy.
 | Endpoint | `server/api/bookings/*`, `server/api/admin/*` |
 | Security rules | `firestore.rules`, `firestore.indexes.json` |
 | QR trip | `app/components/TripQr.vue`, `app/utils/tripUrl.ts` |
+| Sosial media | `app/components/SocialCard.vue`, `SocialEmbed.vue`, `server/utils/socialUrl.ts` |
 | Config deploy | `apphosting.yaml`, `.firebaserc` |
 
-Koleksi Firestore: `trips`, `posts`, `bookings`, `members`, dan dokumen tunggal `settings/companyProfile`.
+Koleksi Firestore: `trips`, `posts`, `socialPosts`, `bookings`, `members`, dan dokumen tunggal `settings/companyProfile`.
 
 ## Halaman
 - `/` — Company profile (hero, trip terdekat, tentang/visi/misi)
 - `/trip` — Daftar open trip + filter level
 - `/trip/[id]` — Detail trip + form booking dinamis (field menyesuaikan toggle SIMAKSI dari admin)
+- `/galeri` — Postingan Instagram & TikTok
 - `/blog`, `/blog/[slug]` — Artikel
 - `/riwayat` — Cek status pendaftaran pakai nomor HP
 - `/admin` — Login admin (Firebase Auth)
-- `/admin/dashboard`, `/admin/trips`, `/admin/posts`, `/admin/bookings`, `/admin/members`, `/admin/profile`
+- `/admin/dashboard`, `/admin/trips`, `/admin/posts`, `/admin/social`, `/admin/bookings`, `/admin/members`, `/admin/profile`
 
 ## Yang masih perlu disambungkan sebelum production
 1. **Upload foto** (trip images, foto KTP) — sekarang masih field URL teks; perlu Firebase Storage.

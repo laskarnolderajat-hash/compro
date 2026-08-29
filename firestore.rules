@@ -21,6 +21,12 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Postingan IG/TikTok pilihan admin — hanya menyimpan URL & metadata publik.
+    match /socialPosts/{postId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Profil perusahaan (dokumen tunggal settings/companyProfile).
     match /settings/{docId} {
       allow read: if true;

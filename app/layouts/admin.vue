@@ -18,6 +18,7 @@ const navItems = [
   { label: 'Dashboard', to: '/admin/dashboard', icon: '◆' },
   { label: 'Kelola Trip', to: '/admin/trips', icon: '▲' },
   { label: 'Kelola Post', to: '/admin/posts', icon: '✎' },
+  { label: 'Sosial Media', to: '/admin/social', icon: '◐' },
   { label: 'Pendaftar', to: '/admin/bookings', icon: '●' },
   { label: 'Member', to: '/admin/members', icon: '◈' },
   { label: 'Profil Perusahaan', to: '/admin/profile', icon: '■' },

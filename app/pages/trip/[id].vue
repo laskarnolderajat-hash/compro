@@ -4,8 +4,10 @@ import type { Participant, EmergencyContact } from '~/types/models'
 const route = useRoute()
 const { getTripById, formatPrice, formatDateRange, effectiveStatus, slotsRemaining } = useTrips()
 const { submitBooking } = useBookings()
+const { postsForTrip } = useSocialPosts()
 
 const trip = computed(() => getTripById(route.params.id as string))
+const tripPosts = computed(() => (trip.value ? postsForTrip(trip.value.id) : []))
 
 function blankParticipant(): Participant {
   return {
@@ -140,6 +142,15 @@ async function handleSubmit() {
             <li v-for="(r, idx) in trip.requirements" :key="idx">• {{ r }}</li>
           </ul>
         </div>
+      </div>
+    </div>
+
+    <!-- Dokumentasi dari sosial media -->
+    <div v-if="tripPosts.length" class="border-t border-white/10 pt-8 mb-10">
+      <h2 class="font-display text-2xl uppercase mb-3 text-frost">Dokumentasi</h2>
+      <p class="text-sm text-fog mb-5">Cuplikan perjalanan ini dari Instagram &amp; TikTok kami.</p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <SocialCard v-for="p in tripPosts" :key="p.id" :post="p" />
       </div>
     </div>
 

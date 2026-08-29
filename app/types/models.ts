@@ -93,6 +93,25 @@ export interface CompanyProfile {
   updatedAt: string
 }
 
+export interface SocialPost {
+  id: string
+  platform: 'instagram' | 'tiktok'
+  /** URL post yang sudah dinormalisasi (tanpa parameter share). */
+  url: string
+  /** Shortcode Instagram atau video id TikTok. */
+  postId: string
+  caption?: string
+  /** TikTok: otomatis dari oEmbed. Instagram: diisi admin, opsional. */
+  thumbnailUrl?: string
+  authorName?: string
+  /** Opsional — mengaitkan post ke satu trip, tampil di halaman trip itu. */
+  tripId?: string
+  /** Tampil di section halaman depan. */
+  featured: boolean
+  order: number
+  createdAt: string
+}
+
 export interface Post {
   id: string
   title: string

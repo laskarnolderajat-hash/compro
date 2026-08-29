@@ -2,6 +2,7 @@
 const { profile } = useCompanyProfile()
 const { openTrips, formatDateRange, effectiveStatus, slotsRemaining } = useTrips()
 const featuredTrips = computed(() => openTrips.value.slice(0, 3))
+const { featuredPosts } = useSocialPosts()
 </script>
 
 <template>
@@ -50,6 +51,22 @@ const featuredTrips = computed(() => openTrips.value.slice(0, 3))
             </span>
           </div>
         </NuxtLink>
+      </div>
+    </section>
+
+    <!-- Sosial media -->
+    <section v-if="featuredPosts.length" class="border-t border-white/10">
+      <div class="max-w-6xl mx-auto px-5 py-16">
+        <div class="flex items-end justify-between mb-8">
+          <div>
+            <p class="font-mono text-ember text-xs uppercase tracking-widest mb-2">Instagram &amp; TikTok</p>
+            <h2 class="font-display text-4xl uppercase">Ikuti Perjalanan Kami</h2>
+          </div>
+          <NuxtLink to="/galeri" class="text-sm text-frost hover:text-ember font-medium shrink-0">Lihat galeri →</NuxtLink>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <SocialCard v-for="p in featuredPosts.slice(0, 6)" :key="p.id" :post="p" />
+        </div>
       </div>
     </section>
 
