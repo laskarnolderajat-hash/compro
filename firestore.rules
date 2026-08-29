@@ -1,0 +1,45 @@
+rules_version = '2';
+
+// Semua tulis dilakukan lewat Nitro server routes memakai Admin SDK
+// (Admin SDK melewati rules), jadi di sini semua write ditutup.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Katalog trip publik.
+    match /trips/{tripId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Post: publik hanya yang published, draft cuma untuk admin.
+    match /posts/{postId} {
+      allow read: if resource.data.status == 'published' || isAdmin();
+      allow write: if false;
+    }
+
+    // Profil perusahaan (dokumen tunggal settings/companyProfile).
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Data pribadi peserta — client biasa lewat /api/bookings/by-phone.
+    match /bookings/{bookingId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    match /members/{memberId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

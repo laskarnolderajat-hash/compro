@@ -1,0 +1,64 @@
+# Firebase App Hosting — dibaca saat build & runtime backend.
+# Tidak ada service account di sini: runtime App Hosting sudah menyediakan
+# Application Default Credentials, dan server/utils/firebaseAdmin.ts memakainya.
+
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  - variable: NUXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyA9QWpS5lWEHB-RTSNC1oafoqScD2YfUpE
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: laskarnolderajat-6693f.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: laskarnolderajat-6693f
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: laskarnolderajat-6693f.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "278093164285"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:278093164285:web:6178082eb101303c5b9894"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: G-514LYJ582Q
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NUXT_PUBLIC_USE_FIREBASE_EMULATOR
+    value: "false"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: FIREBASE_PROJECT_ID
+    value: laskarnolderajat-6693f
+    availability:
+      - RUNTIME

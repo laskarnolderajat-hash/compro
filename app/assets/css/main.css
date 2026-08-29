@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Condensed:wght@500;700;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-display: "Big Shoulders Condensed", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --color-night: #0D1210;
+  --color-pine: #182620;
+  --color-pine-light: #223129;
+  --color-frost: #C7DEE3;
+  --color-frost-dim: #8FAAB0;
+  --color-ember: #E3672E;
+  --color-ember-dim: #B84E1F;
+  --color-fog: #8A968F;
+  --color-paper: #F1EEE4;
+  --color-paper-dim: #E4E0D2;
+}
+
+html { scroll-behavior: smooth; }
+body { background-color: var(--color-night); color: var(--color-paper); font-family: var(--font-body); }
+.font-display { font-family: var(--font-display); letter-spacing: 0.01em; }
+.font-mono { font-family: var(--font-mono); }
+
+.contour-divider {
+  height: 28px;
+  width: 100%;
+  background-repeat: repeat-x;
+  background-size: 120px 28px;
+  opacity: 0.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+::selection { background: var(--color-ember); color: var(--color-night); }
