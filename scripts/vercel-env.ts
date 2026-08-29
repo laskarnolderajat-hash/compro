@@ -27,17 +27,13 @@ for (const line of readFileSync('.env', 'utf8').split('\n')) {
 const serviceAccount = JSON.parse(readFileSync('serviceAccount.json', 'utf8'))
 vars.push(['NUXT_FIREBASE_SERVICE_ACCOUNT', JSON.stringify(serviceAccount)])
 
-const out = [
-  '# Salin tiap baris ke Vercel → Settings → Environment Variables',
-  '# (centang Production, Preview, dan Development)',
-  '# FILE INI RAHASIA — sudah masuk .gitignore, jangan di-commit atau dikirim.',
-  '',
-  ...vars.map(([k, v]) => `${k}=${v}`),
-].join('\n')
-
-writeFileSync('vercel-env.local.txt', out + '\n')
+// Sengaja tanpa baris komentar: bulk-paste Vercel bisa salah baca baris "#"
+// dan menyimpan variabel dengan nilai kosong.
+writeFileSync('vercel-env.local.txt', vars.map(([k, v]) => `${k}=${v}`).join('\n') + '\n')
 
 console.log('✓ vercel-env.local.txt dibuat —', vars.length, 'variabel')
+console.log('  RAHASIA (sudah gitignored) — paste seluruh isinya ke')
+console.log('  Vercel → Settings → Environment Variables, centang ketiga environment.')
 for (const [k, v] of vars) {
   console.log('  ', k, '=', k.includes('SERVICE_ACCOUNT') ? `${v.length} karakter (RAHASIA)` : v)
 }
