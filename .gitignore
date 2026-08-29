@@ -9,6 +9,9 @@ dist
 !.env.example
 serviceAccount*.json
 
+.vercel
+vercel-env.local.txt
+
 .firebase
 .emulator-data
 firebase-debug.log

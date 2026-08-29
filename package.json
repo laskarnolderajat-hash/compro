@@ -9,7 +9,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "emu": "firebase emulators:start --export-on-exit ./.emulator-data",
-    "seed": "node --env-file-if-exists=.env ./node_modules/jiti/lib/jiti-cli.mjs scripts/seed.ts"
+    "seed": "node --env-file-if-exists=.env ./node_modules/jiti/lib/jiti-cli.mjs scripts/seed.ts",
+    "vercel:env": "node --env-file-if-exists=.env ./node_modules/jiti/lib/jiti-cli.mjs scripts/vercel-env.ts"
   },
   "dependencies": {
     "firebase": "^12.18.0",

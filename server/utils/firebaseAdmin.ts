@@ -1,4 +1,4 @@
-import { cert, getApps, initializeApp, applicationDefault, type App } from 'firebase-admin/app'
+import { cert, getApps, initializeApp, applicationDefault, type App, type ServiceAccount } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
 import { getFirestore } from 'firebase-admin/firestore'
 
@@ -25,9 +25,26 @@ function ensureApp(): App {
   const raw = config.firebaseServiceAccount
   app = initializeApp({
     projectId,
-    credential: raw ? cert(JSON.parse(raw)) : applicationDefault(),
+    credential: raw ? cert(parseServiceAccount(raw)) : applicationDefault(),
   })
   return app
+}
+
+/**
+ * NUXT_FIREBASE_SERVICE_ACCOUNT bisa sampai dalam dua bentuk: Nuxt otomatis
+ * mem-parse env var yang isinya JSON jadi objek (destr), tapi kalau ada karakter
+ * yang membuat parsing gagal, nilainya tetap string mentah. Tangani keduanya.
+ */
+function parseServiceAccount(raw: unknown): ServiceAccount {
+  const sa = typeof raw === 'string' ? JSON.parse(raw) : raw as Record<string, unknown>
+  if (!sa || typeof sa !== 'object' || !sa.private_key) {
+    throw new Error('NUXT_FIREBASE_SERVICE_ACCOUNT tidak berisi service account yang valid.')
+  }
+  // Sebagian platform menyimpan newline sebagai "\n" literal — kembalikan.
+  if (typeof sa.private_key === 'string' && sa.private_key.includes('\\n')) {
+    sa.private_key = sa.private_key.replace(/\\n/g, '\n')
+  }
+  return sa as ServiceAccount
 }
 
 export function useAdminDb() {

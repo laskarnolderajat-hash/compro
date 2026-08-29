@@ -50,21 +50,29 @@ npm run dev               # terminal 3
 5. Isi data awal + akun admin: `SEED_TARGET=production SEED_ADMIN_PASSWORD='<password-kuat>' npm run seed`.
    Jangan pakai `admin123` di produksi.
 
-## Deploy — Firebase App Hosting
+## Deploy — Vercel
 
-```bash
-npx firebase apphosting:backends:create
-```
+Firebase tetap jadi backend (Firestore + Auth); yang di-host di Vercel hanya aplikasi Nuxt-nya.
+Cukup paket **Spark (gratis)** di Firebase — App Hosting yang butuh Blaze tidak dipakai.
 
-Ikuti wizard-nya (hubungkan repo GitHub, pilih branch). Setelah itu tiap push ke branch
-tersebut memicu build otomatis.
+1. Import repo `laskarnolderajat-hash/compro` di https://vercel.com/new. Framework terdeteksi
+   otomatis sebagai Nuxt; jangan ubah build command atau output directory.
+2. Isi Environment Variables. Jalankan `npm run vercel:env` untuk membuat
+   `vercel-env.local.txt` berisi semua baris yang perlu di-paste (file ini rahasia dan
+   sudah masuk `.gitignore`). Wajib ada:
+   - semua `NUXT_PUBLIC_FIREBASE_*` dan `NUXT_PUBLIC_USE_FIREBASE_EMULATOR=false`
+   - `NUXT_FIREBASE_SERVICE_ACCOUNT` — isi `serviceAccount.json` dalam satu baris.
+     Di Vercel tidak ada Application Default Credentials, jadi ini **wajib**; tanpa itu
+     semua endpoint `server/api/` gagal 500.
+   - jangan isi `GOOGLE_APPLICATION_CREDENTIALS` (file-nya tidak ikut ter-deploy).
+3. Setelah domain terbit, daftarkan di Firebase Console → **Authentication → Settings →
+   Authorized domains**. Kalau dilewat, login admin ditolak `auth/unauthorized-domain`.
 
-Konfigurasi runtime ada di [`apphosting.yaml`](apphosting.yaml) — semua env `NUXT_PUBLIC_*`
-ada di situ dan **tidak ada service account**: runtime App Hosting menyediakan Application
-Default Credentials sendiri, dan `server/utils/firebaseAdmin.ts` otomatis memakainya.
+[`vercel.json`](vercel.json) mengunci region ke `sin1` (Singapura) supaya dekat dengan
+pengguna Indonesia dan dengan Firestore di `asia-southeast2`.
 
-Setelah backend jadi, tambahkan domainnya di **Authentication → Settings → Authorized
-domains**. Kalau dilewat, login admin ditolak dengan `auth/unauthorized-domain`.
+> `apphosting.yaml` sengaja dibiarkan di repo kalau suatu saat pindah ke Firebase App
+> Hosting — file itu diabaikan oleh Vercel.
 
 ## QR code open trip
 
